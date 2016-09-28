@@ -75,6 +75,7 @@
 };
 
 - (void)formatWithStyle:(NSString *)style
+               fileType:(NSString *)fileType
     usingClangFormatAtLaunchPath:(NSString *)launchPath
                        lineRange:(NSRange)lineRange
                            block:(void (^)(NSString *formattedString,
@@ -100,12 +101,30 @@
   task.standardOutput = outputPipe;
   task.standardError = errorPipe;
   task.launchPath = launchPath;
+  NSString *styleArg = [NSString stringWithFormat:@"--style=%@", style];
+  BOOL isCpp;
+  if ([fileType isEqual:(NSString *)kUTTypeCHeader]) {
+    if ([self.string containsString:@"#import"] ||
+        [self.string containsString:@"@import"]) {
+      isCpp = false;
+    } else {
+      isCpp = true;
+    }
+  } else if ([fileType isEqual:(NSString *)kUTTypeCPlusPlusSource] ||
+             [fileType isEqual:(NSString *)kUTTypeCPlusPlusHeader]) {
+    isCpp = true;
+  } else {
+    isCpp = false;
+  }
+  if (isCpp) {
+    styleArg = @"--style={BasedOnStyle: Google}";
+  }
   task.arguments = @[
     [NSString
         stringWithFormat:@"-lines=%tu:%tu",
                          lineRange.location + 1,                  // 1-based
                          lineRange.location + lineRange.length],  // 1-based
-    [NSString stringWithFormat:@"--style=%@", style],
+    styleArg,
     @"-i",
     [tmpFileURL path]
   ];
