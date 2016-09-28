@@ -26,6 +26,7 @@
 + (instancetype)fragmentUsingBlock:(void (^)(TRVSCodeFragmentBuilder *builder))block;
 
 - (void)formatWithStyle:(NSString *)style
+               fileType:(NSString *)fileType
     usingClangFormatAtLaunchPath:(NSString *)launchPath
                        lineRange:(NSRange)lineRange
                            block:(void (^)(NSString *formattedString,

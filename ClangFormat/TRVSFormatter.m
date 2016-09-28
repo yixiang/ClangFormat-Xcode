@@ -216,7 +216,7 @@
     task.standardOutput = outputPipe;
     task.standardError = errorPipe;
     task.launchPath = shellString;
-    task.arguments = @[ @"-l", @"-c", @"which clang-format" ];
+    task.arguments = @[ @"-l", @"-c", @"which clang-format"];
 
     [task launch];
     [task waitUntilExit];
@@ -261,6 +261,7 @@
     NSRange lineRange = [continuousLineRanges[0] rangeValue];
       __weak typeof(fragment) weakFragment = fragment;
       [fragment formatWithStyle:self.style
+                       fileType:document.fileType
           usingClangFormatAtLaunchPath:executablePath
                              lineRange:lineRange
                                  block:^(NSString *formattedString,
